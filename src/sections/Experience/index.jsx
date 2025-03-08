@@ -1,41 +1,66 @@
-import { faGithub, faYoutube ,faMedium} from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import picExp from "../../assets/picExp1.png";
+import { useState } from 'react';
+import FormattedDate from '../../components/FormattedDate';
+import Picture from '../../components/Picture';
+import TitleLink from '../../components/TitleLink';
+import Material from '../../components/Material';
+import Description from '../../components/Description';
+import Tech from '../../components/Tech';
+import { data } from '../../contents/experience';
+ 
+const SECTION_ID = 'experience-section';
+ 
 const Experience = () => {
+    const [isMouseEnter, setIsMouseEnter] = useState({});
     return (
-        <div className="space-y-4">
-        <div className="text-left text-primaryAccent font-medium">Experience</div>
-        <div className="grid grid-cols-[25%_75%]">
-
-            <div>
-                <div className="text-left">
-                    <span className="text-sm">2024-2025</span>
-                </div>
-                <div>
-            <img src={picExp} className="w-5/6 rounded-md border-2" />
-        </div>
-        </div>
-
-
-        <div className="flex flex-col gap-y-4">
-            <div className="text-primaryAccent">Fashion</div>
-                <div className="flex gap-4 text-lg">
-                    <FontAwesomeIcon icon={faGithub} />
-                    <FontAwesomeIcon icon={faYoutube} />
-                    <FontAwesomeIcon icon={faMedium} />
-            </div>
-            <div className="text-left text-sm">Design
-            <div className="text-left flex gap-4 text-sm">
-                <div className="text-primaryBase font-medium bg-primaryTitle px-2 py-1 rounded-md hover:text-gray-100">React</div>
-                <div className="text-primaryBase font-medium  bg-primaryTitle px-2 py-1 rounded-md  hover:text-gray-100">Tailwind</div>
-
-        </div>
+    <div id={SECTION_ID}>
+        <div className="text-primaryAccent font-medium">Experience</div>
+        {
+            data.map(({
+                date = "",
+                title = "",
+                link = "",
+                materials =[],
+                descriptions= [],
+                skills= [],
+                picture= "",
+            }, index) => (
+                    <div
+                        key={`${SECTION_ID}-${index}-${title.replaceAll(" ", "")}`}
+                        className={`grid grid-cols-[25%_75%] rounded-md px-2 py-6 transition-all ${isMouseEnter [`${SECTION_ID}-${index}`] ? "bg-gray-200":""}`}
+                        onMouseEnter={() => setIsMouseEnter({[`${SECTION_ID}-${index}`]: true})}
+                        onMouseLeave={() => setIsMouseEnter({[`${SECTION_ID}-${index}`]:false})}
+                    >
+                        <div>
+                            <FormattedDate isHighLight = {isMouseEnter [`${SECTION_ID}-${index}`]}>{date}</FormattedDate>
+                            <Picture picture={picture} title={title}/>
+                        </div>
+                        <div className="grid gap-y-4">
+                            <TitleLink isHighLight = {isMouseEnter [`${SECTION_ID}-${index}`]} title={title} link={link}/>
+                           
+                            <div className='flex gap-4 text-xl'>
+                                {
+                                    materials.map((e,i) => (
+                                        <Material key={`${e}-material-${i}`} icon={e.type} link={e.link} />
+                                    ))
+                                }
+                            </div>
+                            {
+                                descriptions.map((e,i) => (
+                                    <Description key={`${e}-descriptions-${i}`} description={e}/>
+                                ))
+                            }
+                            {
+                                skills.map((e,i) => (
+                                    <Tech key={`${e}-skill-${i}`} isHighLight = {isMouseEnter [`${SECTION_ID}-${index}`]} data={e}/>
+                                ))
+                            }
+                        </div>
+                    </div>
+           ))
+        }
     </div>
-    </div>
-    </div>
-    </div>
-    
     )
-
 }
+ 
 export default Experience;
+ 
